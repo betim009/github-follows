@@ -44,9 +44,16 @@ export async function getGithubFollowData() {
     (user) => !followersLogins.includes(user.login)
   );
 
+  const followingLogins = following.map((user) => user.login);
+
+  const notFollowedBack = followers.filter(
+    (user) => !followingLogins.includes(user.login)
+  );
+
   return {
     followers,
     following,
     notFollowingBack,
+    notFollowedBack,
   };
 }

@@ -17,6 +17,8 @@ import {
   Paper,
   Snackbar,
   Stack,
+  Tab,
+  Tabs,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -29,6 +31,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [view, setView] = useState("notFollowingBack");
 
   async function handleSearch() {
     setLoading(true);
@@ -46,12 +49,20 @@ function App() {
   }
 
   const notFollowingBack = result?.notFollowingBack ?? [];
+  const notFollowedBack = result?.notFollowedBack ?? [];
+  const selectedList = view === "notFollowedBack" ? notFollowedBack : notFollowingBack;
+  const emptyText =
+    view === "notFollowedBack"
+      ? "Você segue de volta todo mundo que te segue."
+      : "Todo mundo que você segue também te segue.";
+
   const summary = useMemo(() => {
     if (!result) return null;
     return {
       followers: result.followers.length,
       following: result.following.length,
       notFollowingBack: result.notFollowingBack.length,
+      notFollowedBack: result.notFollowedBack.length,
     };
   }, [result]);
 
@@ -81,7 +92,7 @@ function App() {
               loading ? <CircularProgress color="inherit" size={18} /> : <PersonSearchIcon />
             }
           >
-            {loading ? "Buscando..." : "Ver quem não me segue"}
+            {loading ? "Buscando..." : result ? "Atualizar" : "Buscar"}
           </Button>
         </Toolbar>
         <Divider />
@@ -93,8 +104,8 @@ function App() {
             <Stack spacing={1.25}>
               <Typography variant="h5">Resultado</Typography>
               <Typography variant="body2" color="text.secondary">
-                Clique em “Ver quem não me segue” para buscar seguidores/seguindo e listar quem não segue
-                de volta.
+                Busque seguidores/seguindo e visualize as duas listas: quem você segue e não te segue de
+                volta, e quem te segue e você não segue de volta.
               </Typography>
 
               {summary && (
@@ -105,12 +116,17 @@ function App() {
                     color={summary.notFollowingBack > 0 ? "warning" : "success"}
                     label={`Não seguem de volta: ${summary.notFollowingBack}`}
                   />
+                  <Chip
+                    color={summary.notFollowedBack > 0 ? "info" : "success"}
+                    label={`Eu não sigo de volta: ${summary.notFollowedBack}`}
+                    variant={summary.notFollowedBack > 0 ? "filled" : "outlined"}
+                  />
                 </Stack>
               )}
 
-              {!loading && result && notFollowingBack.length === 0 && (
+              {!loading && result && summary && summary.notFollowingBack === 0 && summary.notFollowedBack === 0 && (
                 <Alert severity="success" sx={{ mt: 1 }}>
-                  Boa! Ninguém ficou pendente — todo mundo que você segue também te segue.
+                  Tudo certo — não há diferenças entre seguidores e seguindo.
                 </Alert>
               )}
             </Stack>
@@ -129,30 +145,56 @@ function App() {
             )}
 
             {!loading && result && (
-              <List disablePadding>
-                {notFollowingBack.map((user, idx) => (
-                  <Box key={user.id}>
-                    <ListItem disablePadding>
-                      <ListItemButton
-                        component="a"
-                        href={user.html_url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <ListItemAvatar>
-                          <Avatar alt={user.login} src={user.avatar_url} />
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={user.login}
-                          secondary={user.html_url}
-                          secondaryTypographyProps={{ noWrap: true }}
-                        />
-                      </ListItemButton>
-                    </ListItem>
-                    {idx !== notFollowingBack.length - 1 && <Divider component="li" />}
+              <>
+                <Tabs
+                  value={view}
+                  onChange={(_, next) => setView(next)}
+                  variant="fullWidth"
+                  textColor="primary"
+                  indicatorColor="primary"
+                >
+                  <Tab
+                    value="notFollowingBack"
+                    label={`Não me seguem (${summary?.notFollowingBack ?? 0})`}
+                  />
+                  <Tab
+                    value="notFollowedBack"
+                    label={`Eu não sigo (${summary?.notFollowedBack ?? 0})`}
+                  />
+                </Tabs>
+                <Divider />
+
+                {selectedList.length === 0 ? (
+                  <Box sx={{ p: 3 }}>
+                    <Alert severity="success">{emptyText}</Alert>
                   </Box>
-                ))}
-              </List>
+                ) : (
+                  <List disablePadding>
+                    {selectedList.map((user, idx) => (
+                      <Box key={user.id}>
+                        <ListItem disablePadding>
+                          <ListItemButton
+                            component="a"
+                            href={user.html_url}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <ListItemAvatar>
+                              <Avatar alt={user.login} src={user.avatar_url} />
+                            </ListItemAvatar>
+                            <ListItemText
+                              primary={user.login}
+                              secondary={user.html_url}
+                              secondaryTypographyProps={{ noWrap: true }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                        {idx !== selectedList.length - 1 && <Divider component="li" />}
+                      </Box>
+                    ))}
+                  </List>
+                )}
+              </>
             )}
 
             {!loading && !result && (
