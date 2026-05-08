@@ -13,6 +13,8 @@ Dessa forma consigo saber quem me segue ou não.
 - [x] Melhorar Design (UI com Material UI)
 - [x] Criar Função para verificar quais pessoas que me seguem que eu nao sigo de volta
 - [x] Readme na raiz editado
+- [x] Criar Mine Dashboard para a pagina
+- [x] Definir possiveis novos progreesos que precisa de aprovacao para executar
 
 
 ## Surprises & Discoveries
@@ -29,9 +31,19 @@ Dessa forma consigo saber quem me segue ou não.
 - Simplificar `frontend/src/index.css` para evitar conflitos com `CssBaseline`/tema MUI.
 - Exibir as duas comparações (quem não segue de volta / quem eu não sigo de volta) em uma única tela via `Tabs`, para reduzir cliques e manter contexto.
 - Não versionar `frontend/.env`; versionar apenas `frontend/.env.example` e instruir o setup no `README.md` da raiz.
+- Mini dashboard: usar cards simples (MUI `Paper`) com skeleton durante loading e timestamp de última atualização.
 
 ## Outcomes & Retrospective
 Resumo final
+
+## Progressos que exigem aprovação
+Itens abaixo podem causar impacto maior (mudança de histórico, custos, permissões, etc.). Antes de executar, pedir aprovação explícita:
+
+- Reescrever histórico do Git para remover segredos (ex.: token que já foi commitado) + `git push --force` (impacta quem já clonou o repo).
+- Rotacionar/revogar token do GitHub (ação manual na conta do GitHub).
+- Publicar deploy (Vercel/Netlify/GitHub Pages) e configurar variáveis/segredos no provedor.
+- Adicionar autenticação OAuth do GitHub (exige criar GitHub App/OAuth App e ajustar callbacks/segredos).
+- Criar/alterar pipeline de CI (GitHub Actions) que rode lint/build automaticamente em PRs.
 
 ## Context and Orientation
 Frontend em `frontend/` (React + Vite) que consulta a API do GitHub e exibe:
@@ -52,6 +64,8 @@ Frontend em `frontend/` (React + Vite) que consulta a API do GitHub e exibe:
 - O README.md na raiz deve instruir pessoas ao clonar esse repo, a como fazer o projeto funcionar localmente no computador delas.
 - `README.md` da raiz atualizado com requisitos, setup e validação.
 - Criado `frontend/.env.example` e removido `frontend/.env` do Git (arquivo local continua existindo, mas não é versionado).
+- Nao deletar/alterar nenhuma informacao dentro do .env
+- Criado mini dashboard na tela (cards com contadores + “Última atualização”).
 
 ## Validation and Acceptance
 - Validação local:
@@ -75,6 +89,7 @@ Repetição e recuperação
   - `frontend/src/services/githubApi.js` (renomeado de `githubAPI.jsx`)
 - Arquivos alterados (nesta etapa):
   - `PLANS.md`
+  - `frontend/src/App.jsx`
   - `README.md`
   - `frontend/.env.example`
   - `frontend/.env` (removido do Git)
@@ -89,6 +104,7 @@ Repetição e recuperação
   - `npm run lint` (frontend)
   - `npm run build` (frontend)
   - `npm run lint && npm run build` (frontend)
+  - `npm run lint && npm run build` (frontend)
   - `npm run dev -- --host 127.0.0.1 --port 5173 --strictPort` (frontend; interrompido com Ctrl+C)
   - `git add -A PLANS.md frontend/src`
   - `git commit -m "feat(ui): redesign with Material UI"`
@@ -98,6 +114,9 @@ Repetição e recuperação
   - `git commit -m "docs(readme): add setup instructions and env example"`
   - `git commit -m "docs(plans): record README and env changes"`
   - `git push origin main`
+  - `git add frontend/src/App.jsx`
+  - `git commit -m "feat(ui): add mini dashboard"`
+  - `git push origin main`
 - Commits:
   - `48b4d39` `feat(ui): redesign with Material UI`
   - `6c10cd3` `docs(plans): record artifacts and commit`
@@ -106,6 +125,8 @@ Repetição e recuperação
   - `adcf227` `docs(plans): record followers feature commit`
   - `3a336e0` `docs(readme): add setup instructions and env example`
   - `b614394` `docs(plans): record README and env changes`
+  - `a7f9e9c` `docs(plans): record latest commits`
+  - `d93d939` `feat(ui): add mini dashboard`
 
 ## Interfaces and Dependencies
 - Variáveis de ambiente (Vite):
