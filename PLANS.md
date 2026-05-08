@@ -63,8 +63,10 @@ Repetição e recuperação
   - `npm run build` (frontend)
   - `git add -A PLANS.md frontend/src`
   - `git commit -m "feat(ui): redesign with Material UI"`
+  - `git push origin main`
 - Commits:
   - `48b4d39` `feat(ui): redesign with Material UI`
+  - `6c10cd3` `docs(plans): record artifacts and commit`
 
 ## Interfaces and Dependencies
 - Variáveis de ambiente (Vite):
