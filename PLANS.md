@@ -58,8 +58,13 @@ Repetição e recuperação
 - Comandos executados (até aqui):
   - `cat PLANS.md`
   - `ls -la` / `ls -la frontend` / `find .. -maxdepth 3 -name AGENTS.md -print`
+  - `git diff` / `git restore .gitignore frontend/.env` (reversão preventiva)
   - `npm run lint` (frontend)
   - `npm run build` (frontend)
+  - `git add -A PLANS.md frontend/src`
+  - `git commit -m "feat(ui): redesign with Material UI"`
+- Commits:
+  - `48b4d39` `feat(ui): redesign with Material UI`
 
 ## Interfaces and Dependencies
 - Variáveis de ambiente (Vite):
