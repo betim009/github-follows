@@ -15,6 +15,7 @@ import {
   ListItemButton,
   ListItemText,
   Paper,
+  Skeleton,
   Snackbar,
   Stack,
   Tab,
@@ -32,6 +33,7 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [view, setView] = useState("notFollowingBack");
+  const [lastUpdatedAt, setLastUpdatedAt] = useState(null);
 
   async function handleSearch() {
     setLoading(true);
@@ -39,6 +41,7 @@ function App() {
     try {
       const data = await getGithubFollowData();
       setResult(data);
+      setLastUpdatedAt(new Date());
     } catch (error) {
       console.error(error);
       setErrorMessage("Erro ao buscar dados do GitHub. Verifique o token/usuário no .env.");
@@ -65,6 +68,14 @@ function App() {
       notFollowedBack: result.notFollowedBack.length,
     };
   }, [result]);
+
+  const lastUpdatedLabel = useMemo(() => {
+    if (!lastUpdatedAt) return null;
+    return new Intl.DateTimeFormat("pt-BR", {
+      dateStyle: "short",
+      timeStyle: "medium",
+    }).format(lastUpdatedAt);
+  }, [lastUpdatedAt]);
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
@@ -102,10 +113,66 @@ function App() {
         <Stack spacing={2.5}>
           <Paper variant="outlined" sx={{ p: 2.5 }}>
             <Stack spacing={1.25}>
-              <Typography variant="h5">Resultado</Typography>
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={1}
+                alignItems={{ sm: "baseline" }}
+                justifyContent="space-between"
+              >
+                <Typography variant="h5">Mini Dashboard</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {lastUpdatedLabel ? `Última atualização: ${lastUpdatedLabel}` : "Ainda não buscado"}
+                </Typography>
+              </Stack>
+
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(4, 1fr)" },
+                  gap: 1,
+                  pt: 0.5,
+                }}
+              >
+                {loading ? (
+                  <>
+                    <Skeleton variant="rounded" height={72} />
+                    <Skeleton variant="rounded" height={72} />
+                    <Skeleton variant="rounded" height={72} />
+                    <Skeleton variant="rounded" height={72} />
+                  </>
+                ) : (
+                  <>
+                    <Paper variant="outlined" sx={{ p: 1.25 }}>
+                      <Typography variant="overline" color="text.secondary">
+                        Seguidores
+                      </Typography>
+                      <Typography variant="h5">{summary?.followers ?? "—"}</Typography>
+                    </Paper>
+                    <Paper variant="outlined" sx={{ p: 1.25 }}>
+                      <Typography variant="overline" color="text.secondary">
+                        Seguindo
+                      </Typography>
+                      <Typography variant="h5">{summary?.following ?? "—"}</Typography>
+                    </Paper>
+                    <Paper variant="outlined" sx={{ p: 1.25 }}>
+                      <Typography variant="overline" color="text.secondary">
+                        Não me seguem
+                      </Typography>
+                      <Typography variant="h5">{summary?.notFollowingBack ?? "—"}</Typography>
+                    </Paper>
+                    <Paper variant="outlined" sx={{ p: 1.25 }}>
+                      <Typography variant="overline" color="text.secondary">
+                        Eu não sigo
+                      </Typography>
+                      <Typography variant="h5">{summary?.notFollowedBack ?? "—"}</Typography>
+                    </Paper>
+                  </>
+                )}
+              </Box>
+
               <Typography variant="body2" color="text.secondary">
-                Busque seguidores/seguindo e visualize as duas listas: quem você segue e não te segue de
-                volta, e quem te segue e você não segue de volta.
+                Use as abas abaixo para alternar entre as listas: quem você segue e não te segue de volta,
+                e quem te segue e você não segue de volta.
               </Typography>
 
               {summary && (
