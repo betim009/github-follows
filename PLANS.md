@@ -79,10 +79,13 @@ Repetição e recuperação
   - `git add -A PLANS.md frontend/src`
   - `git commit -m "feat(ui): redesign with Material UI"`
   - `git push origin main`
+  - `git commit -m "feat(followers): show who I don't follow back"`
+  - `git push origin main`
 - Commits:
   - `48b4d39` `feat(ui): redesign with Material UI`
   - `6c10cd3` `docs(plans): record artifacts and commit`
   - `db6fe68` `docs(plans): note push`
+  - `da06ed2` `feat(followers): show who I don't follow back`
 
 ## Interfaces and Dependencies
 - Variáveis de ambiente (Vite):
