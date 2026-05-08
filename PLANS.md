@@ -12,6 +12,7 @@ Dessa forma consigo saber quem me segue ou não.
 - [x] API ja conectada
 - [x] Melhorar Design (UI com Material UI)
 - [x] Criar Função para verificar quais pessoas que me seguem que eu nao sigo de volta
+- [x] Readme na raiz editado
 
 
 ## Surprises & Discoveries
@@ -20,18 +21,23 @@ Dessa forma consigo saber quem me segue ou não.
 - O arquivo `frontend/.env` chegou a aparecer modificado localmente durante a execução; foi revertido antes de qualquer commit para evitar risco de versionar credenciais.
 - Importante: se `frontend/.env` contiver um token real, revogue/rotacione o token (ele não deve ser commitado).
 - `npm run dev` indicou que a porta 5173 estava em uso em wildcard, mas `127.0.0.1:5173` ficou disponível e o Vite subiu normalmente (smoke test do servidor ok).
+- `frontend/.env` estava versionado e continha um token real; foi removido do tracking (mantendo apenas `frontend/.env.example`). Recomenda-se rotacionar o token no GitHub imediatamente.
 
 ## Decision Log
 - Adotar Material UI como base do layout (AppBar, Container, Paper, List, Alert, Snackbar) para melhorar consistência visual e acessibilidade com pouco CSS manual.
 - Centralizar tema MUI (com `prefers-color-scheme`) em um componente `Root` para manter `main.jsx` simples e compatível com React Refresh.
 - Simplificar `frontend/src/index.css` para evitar conflitos com `CssBaseline`/tema MUI.
 - Exibir as duas comparações (quem não segue de volta / quem eu não sigo de volta) em uma única tela via `Tabs`, para reduzir cliques e manter contexto.
+- Não versionar `frontend/.env`; versionar apenas `frontend/.env.example` e instruir o setup no `README.md` da raiz.
 
 ## Outcomes & Retrospective
 Resumo final
 
 ## Context and Orientation
-Explica o sistema atual
+Frontend em `frontend/` (React + Vite) que consulta a API do GitHub e exibe:
+
+- Quem você segue e não te segue de volta (`notFollowingBack`)
+- Quem te segue e você não segue de volta (`notFollowedBack`)
 
 ## Plan of Work
 - Para melhorar o design do sistema eu quero que voce use os components da biblioteca Material UI. 
@@ -43,6 +49,9 @@ Explica o sistema atual
 - Criado wrapper de tema (`Root`) e aplicado `CssBaseline`.
 - Implementada a segunda comparação: `notFollowedBack` (followers que não estão em following).
 - UI atualizada com `Tabs` para alternar entre as listas.
+- O README.md na raiz deve instruir pessoas ao clonar esse repo, a como fazer o projeto funcionar localmente no computador delas.
+- `README.md` da raiz atualizado com requisitos, setup e validação.
+- Criado `frontend/.env.example` e removido `frontend/.env` do Git (arquivo local continua existindo, mas não é versionado).
 
 ## Validation and Acceptance
 - Validação local:
@@ -66,6 +75,9 @@ Repetição e recuperação
   - `frontend/src/services/githubApi.js` (renomeado de `githubAPI.jsx`)
 - Arquivos alterados (nesta etapa):
   - `PLANS.md`
+  - `README.md`
+  - `frontend/.env.example`
+  - `frontend/.env` (removido do Git)
   - `frontend/src/App.jsx`
   - `frontend/src/services/githubApi.js`
 - Comandos executados (até aqui):
@@ -73,8 +85,10 @@ Repetição e recuperação
   - `ls -la` / `ls -la frontend` / `find .. -maxdepth 3 -name AGENTS.md -print`
   - `git diff` / `git restore .gitignore frontend/.env` (reversão preventiva)
   - `git restore frontend/.env` (reversão preventiva)
+  - `git rm --cached frontend/.env`
   - `npm run lint` (frontend)
   - `npm run build` (frontend)
+  - `npm run lint && npm run build` (frontend)
   - `npm run dev -- --host 127.0.0.1 --port 5173 --strictPort` (frontend; interrompido com Ctrl+C)
   - `git add -A PLANS.md frontend/src`
   - `git commit -m "feat(ui): redesign with Material UI"`
